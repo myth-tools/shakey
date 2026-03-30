@@ -1,0 +1,126 @@
+# ============================================================
+#  MODEL ARCHITECTURE STAGES
+#  The agent self-promotes through these stages as it grows.
+#  Each stage uses BitNet 1.58-bit + Sparse MoE.
+# ============================================================
+
+stages:
+  # ── Stage 0: Seed ─────────────────────────────────────────
+  # First model. Learns basic language from teachers.
+  # Fits in ~8MB RAM. Can run on a Raspberry Pi.
+  - name: "seed"
+    total_params_approx: "15M"
+    vocab_size: 32000
+    d_model: 256
+    n_layers: 6
+    n_heads: 4
+    n_kv_heads: 2                   # GQA: 2 KV heads for 4 Q heads
+    d_ff: 512                       # Feed-forward hidden dim (per expert)
+    n_experts: 4
+    n_active_experts: 2             # Top-2 routing
+    max_seq_len: 2048
+    rope_scaling: 2.0
+    rope_theta: 10000.0
+    rms_norm_eps: 1.0e-6
+    weight_bits: "1.58"
+    activation: "swiglu"
+    n_medusa_heads: 3
+    lora_rank: 8                     # Small rank for tiny model
+    lora_alpha: 16.0
+    online_learning: true            # Sovereign Hardening: Enabled for autonomous evolution
+
+  # ── Stage 1: Sprout ───────────────────────────────────────
+  # Can follow instructions. Basic tool use.
+  # ~30MB RAM.
+  - name: "sprout"
+    total_params_approx: "60M"
+    vocab_size: 32000
+    d_model: 512
+    n_layers: 12
+    n_heads: 8
+    n_kv_heads: 4
+    d_ff: 1024
+    n_experts: 4
+    n_active_experts: 2
+    max_seq_len: 4096
+    rope_scaling: 2.0
+    rope_theta: 10000.0
+    rms_norm_eps: 1.0e-6
+    weight_bits: "1.58"
+    activation: "swiglu"
+    n_medusa_heads: 3
+    lora_rank: 16
+    lora_alpha: 32.0
+    online_learning: true            # Sovereign Hardening: Enabled for autonomous evolution
+
+  # ── Stage 2: Sapling ──────────────────────────────────────
+  # Multi-step planning. Autonomous learning begins.
+  # ~75MB RAM.
+  - name: "sapling"
+    total_params_approx: "150M"
+    vocab_size: 32000
+    d_model: 768
+    n_layers: 16
+    n_heads: 12
+    n_kv_heads: 4
+    d_ff: 2048
+    n_experts: 8
+    n_active_experts: 2
+    max_seq_len: 8192
+    rope_scaling: 2.0
+    rope_theta: 50000.0
+    rms_norm_eps: 1.0e-6
+    weight_bits: "1.58"
+    activation: "swiglu"
+    n_medusa_heads: 3
+    lora_rank: 32
+    lora_alpha: 64.0
+    online_learning: true            # Online learning activates at this stage
+
+  # ── Stage 3: Tree ─────────────────────────────────────────
+  # Full autonomous operation. Creates own tools.
+  # ~200MB RAM.
+  - name: "tree"
+    total_params_approx: "500M"
+    vocab_size: 32000
+    d_model: 1024
+    n_layers: 24
+    n_heads: 16
+    n_kv_heads: 4
+    d_ff: 2816
+    n_experts: 8
+    n_active_experts: 2
+    max_seq_len: 16384
+    rope_scaling: 2.0
+    rope_theta: 100000.0
+    rms_norm_eps: 1.0e-6
+    weight_bits: "1.58"
+    activation: "swiglu"
+    n_medusa_heads: 5
+    lora_rank: 64
+    lora_alpha: 128.0
+    online_learning: true
+
+  # ── Stage 4: Forest ───────────────────────────────────────
+  # Maximum capability. Self-architecting.
+  # ~600MB RAM.
+  - name: "forest"
+    total_params_approx: "1.5B"
+    vocab_size: 32000
+    d_model: 1280
+    n_layers: 32
+    n_heads: 20
+    n_kv_heads: 4
+    d_ff: 3584
+    n_experts: 16
+    n_active_experts: 2
+    max_seq_len: 32768
+    rope_scaling: 2.0
+    rope_theta: 500000.0
+    rms_norm_eps: 1.0e-6
+    weight_bits: "1.58"
+    activation: "swiglu"
+    n_medusa_heads: 5
+    lora_rank: 128
+    lora_alpha: 256.0
+    online_learning: true

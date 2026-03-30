@@ -1,0 +1,184 @@
+# ============================================================
+#  AUTONOMOUS AGENT CONFIGURATION
+#  This is the master config for the self-evolving LLM agent.
+#  All fields are hot-reloadable at runtime.
+# ============================================================
+
+# ── Identity ────────────────────────────────────────────────
+# The display name of this agent instance.
+# This is DYNAMIC — change it anytime, it will be reflected
+# in all logs, outputs, and self-references.
+identity:
+  name: "shakey"                          # <── SET YOUR MODEL NAME HERE
+  version: "0.1.0"
+  codename: "seed"                  # seed → sprout → sapling → tree → forest
+  description: "Autonomous self-evolving agentic LLM"
+
+# ── Model Architecture ──────────────────────────────────────
+model:
+  stage: 0                          # Current evolution stage (0-4)
+  config_path: "configs/model_stages.yaml"
+  weights_path: "shakey_data/models/latest.safetensors"
+  tokenizer_path: "shakey_data/tokenizer/tokenizer.json"
+  device: "cpu"                     # cpu | cuda | metal | vulkan
+  dtype: "f32"                      # f32 (training) | bf16 | f16
+
+# ── Training ────────────────────────────────────────────────
+training:
+  enabled: true
+  optimizer: "adamw"
+  learning_rate: 3.0e-4
+  min_learning_rate: 1.0e-6
+  warmup_steps: 1000
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  epsilon: 1.0e-8
+  max_grad_norm: 1.0
+  batch_size: 32
+  gradient_accumulation_steps: 8
+  max_sequence_length: 2048
+
+  # Distillation-specific
+  distillation:
+    temperature: 2.0
+    alpha_kl: 0.7                   # KL-divergence loss weight
+    alpha_ce: 0.3                   # Cross-entropy loss weight
+    teacher_top_k: 50               # Get top-k logits from teacher
+    multi_teacher_strategy: "weighted_average"  # weighted_average | best_of | voting
+
+  # Learning rate schedule
+  schedule:
+    type: "cosine_with_warmup"      # cosine_with_warmup | linear | constant
+    total_steps: 100000
+    warmup_steps: 1000
+    min_lr_ratio: 0.1
+
+# ── Checkpointing ───────────────────────────────────────────
+# CRITICAL: Designed for Colab/Kaggle where VMs can die anytime.
+# Zero data loss guaranteed via atomic writes + WAL.
+checkpoint:
+  enabled: true
+  directory: "shakey_data/checkpoints"
+  save_every_steps: 100             # Auto-save frequency
+  keep_last_n: 5                    # Number of checkpoints to retain
+  save_optimizer_state: true        # Required for proper resume
+  save_rng_state: true              # Required for reproducibility
+  atomic_writes: true               # Write to .tmp then rename
+  compress: false                   # gzip compression (slower but smaller)
+  # Remote sync (for Colab → Google Drive, etc.)
+  remote_sync:
+    enabled: false
+    target: ""                      # e.g., "/content/drive/MyDrive/shakey_checkpoints"
+    sync_every_steps: 500
+
+# ── NVIDIA NIM API ──────────────────────────────────────────
+# Configuration for the teacher model infrastructure.
+# Most rate-limiting logic is now handled dynamically via teachers.yaml.
+nvidia:
+  api_key: ""                       # Set via NVIDIA_API_KEY env var or here
+  base_url: "https://integrate.api.nvidia.com/v1"
+  teachers_config: "configs/teachers.yaml"
+  timeout_secs: 120
+
+# ── Evolution Engine ────────────────────────────────────────
+evolution:
+  enabled: true                    # Sovereign Hardening: Enabled for autonomous OODA cycles
+  ooda_cycle_interval_secs: 3600   # Time between OODA cycles (1 hour)
+  compute_budget_per_cycle_secs: 1800  # Max compute per cycle (30 min)
+  min_improvement_threshold: 0.01  # 1% improvement required to commit
+  max_rollback_depth: 5            # How many versions to keep
+  max_recursion_depth: 10          # Diamond-Grade: Recursive safety depth
+  reflection_window: 5             # Cycle window for self-reflection
+  auto_scale: false                # Auto-promote to next model stage
+  
+  # Data collection limits
+  data_collection:
+    max_web_requests_per_cycle: 100
+    max_tokens_per_cycle: 1000000   # 1M tokens
+    quality_threshold: 0.7          # Min reward model score (0-1)
+
+# ── Agent Tools ─────────────────────────────────────────────
+tools:
+  sandbox:
+    enabled: true
+    engine: "subprocess"            # subprocess | wasmtime
+    timeout_secs: 30
+    max_memory_mb: 512
+    allowed_commands:
+      - "python3"
+      - "node"
+      - "curl"
+      - "wget"
+  web:
+    user_agent: "ShakeyBot/0.1 (autonomous-learning-agent)"
+    max_concurrent_requests: 5
+    request_timeout_secs: 30
+    respect_robots_txt: false
+
+# ── Knowledge Base ──────────────────────────────────────────
+knowledge:
+  directory: "shakey_data/knowledge"
+  max_size_gb: 10
+  embedding_dim: 384                # Matches small embedding models
+  similarity_threshold: 0.75
+
+# ── Logging ─────────────────────────────────────────────────
+logging:
+  level: "info"                     # trace | debug | info | warn | error
+  format: "pretty"                  # pretty | json | compact
+  file: "shakey_data/logs/agent.log"
+  max_file_size_mb: 100
+  rotate_count: 5
+
+# ── Online Learning (LoRA + Replay Buffer) ──────────────────
+# Dynamic parameter updates during user interaction.
+# Uses Low-Rank Adaptation to keep base weights frozen.
+online_learning:
+  enabled: true
+  lora_rank: 8                      # Synchronized with Stage 0 (Seed) 8MB memory profile
+  lora_alpha: 32.0                  # Scaling factor for LoRA
+  lora_dropout: 0.0                 # Dropout (0.0 for pure online learning)
+  replay_buffer_capacity: 2000      # Max memories in replay buffer
+  dedup_threshold: 0.98             # Semantic deduplication similarity floor
+  dpo_enabled: true                 # Online Direct Preference Optimization
+  dpo_beta: 0.1                     # DPO KL penalty strength
+  mental_sandbox: true              # Consistency check before committing updates
+  max_online_updates_per_hour: 30   # Throttle to prevent OODA thrashing
+
+# ── Multimodal Capabilities ─────────────────────────────────
+# Shakey can process and generate diverse data types via NIM teachers.
+multimodal:
+  vision:
+    enabled: true
+    models:
+      - "meta/llama-3.2-90b-vision-instruct"
+      - "nvidia/cosmos-reason2-8b"
+      - "microsoft/phi-4-multimodal-instruct"
+  audio:
+    enabled: true
+    models:
+      - "nvidia/cosmos-reason2-8b"
+      - "microsoft/phi-4-multimodal-instruct"
+  translation:
+    enabled: true
+    models:
+      - "nvidia/riva-translate-4b-instruct-v1.1"
+  code_generation:
+    enabled: true
+    models:
+      - "qwen/qwen3-coder-480b-a35b-instruct"
+      - "mistralai/codestral-22b-instruct-v0.1"
+  three_d:
+    enabled: true
+    models:
+      - "nvidia/usdcode-llama-3.1-70b-instruct"
+
+# ── MCP Servers (Model Context Protocol) ────────────────────
+# Shakey can connect to and create MCP servers for extended tool use.
+mcp_servers:
+  enabled: false                    # Enable when MCP servers are deployed
+  registry_path: "shakey_data/mcp/registry.json"
+  auto_discover: true               # Auto-discover MCP servers on local network
+  max_concurrent_connections: 10
+  timeout_secs: 30

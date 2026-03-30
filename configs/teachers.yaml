@@ -1,0 +1,378 @@
+# ============================================================
+#  NVIDIA NIM TEACHER MODEL CONFIGURATION (Fortress Categorized)
+#  Each teacher has a role, priority, and rate allocation.
+#  The agent dynamically selects the best teacher per task.
+#  STRICT COMPLIANCE: ONLY models from notes/nvidia_models.txt.
+# ============================================================
+
+# Rate budget distribution (total: 40 RPM for Free Tier)
+# This budget prevents role-starvation during multi-modal evolution.
+rate_budget:
+  reasoning: 12
+  code: 7
+  math: 4
+  vision_video: 2
+  audio_transcription: 2
+  3d_synthesis: 2
+  safety: 2
+  multimodal_general: 2
+  reward: 20
+  embedding: 2
+
+teachers:
+  # ── BLOCK 1: CORE INTELLIGENCE & LANGUAGE MASTERY ─────────
+  # Primary reasoning, consensus gathering, and synthesis.
+
+  - model: "mistralai/mistral-large-3-675b-instruct-2512" # [DEFAULT]
+    role: "reasoning"
+    priority: 1 
+    max_tokens: 24576
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  - model: "deepseek-ai/deepseek-v3.1-terminus"
+    role: "reasoning"
+    priority: 2
+    max_tokens: 24576
+    temperature: 0.6
+    top_logprobs: 5
+    enabled: true
+
+  - model: "nvidia/nemotron-4-340b-instruct"
+    role: "reasoning"
+    priority: 3
+    max_tokens: 24576
+    temperature: 0.6
+    top_logprobs: 5
+    enabled: true
+
+  - model: "moonshotai/kimi-k2-thinking"
+    role: "reasoning"
+    priority: 4
+    max_tokens: 12288
+    temperature: 0.6
+    top_logprobs: 5
+    enabled: true
+
+  - model: "meta/llama-3.1-405b-instruct"
+    role: "reasoning"
+    priority: 5
+    max_tokens: 24576
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  - model: "qwen/qwen3.5-397b-a17b"
+    role: "reasoning"
+    priority: 6
+    max_tokens: 49152
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  - model: "z-ai/glm5"
+    role: "reasoning"
+    priority: 7
+    max_tokens: 24576
+    temperature: 0.6
+    top_logprobs: 5
+    enabled: true
+
+  - model: "nvidia/nemotron-4-340b-instruct"             # [DEFAULT]
+    role: "consensus"
+    priority: 1
+    max_tokens: 24576
+    temperature: 0.5
+    top_logprobs: 5
+    enabled: true
+
+  - model: "mistralai/mistral-large-3-675b-instruct-2512"
+    role: "consensus"
+    priority: 2
+    max_tokens: 8192
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  - model: "meta/llama-3.3-70b-instruct"
+    role: "consensus"
+    priority: 3
+    max_tokens: 8192
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  - model: "nvidia/llama-3.1-nemotron-70b-instruct"
+    role: "consensus"
+    priority: 4
+    max_tokens: 8192
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  - model: "meta/llama-3.3-70b-instruct"              # [DEFAULT]
+    role: "summarizer"
+    priority: 1
+    max_tokens: 49152
+    temperature: 0.3
+    top_logprobs: 0
+    enabled: true
+
+  - model: "deepseek-ai/deepseek-v3.1-terminus"        # [DEFAULT]
+    role: "sovereign_distill"
+    priority: 1
+    max_tokens: 16384
+    temperature: 0.7
+    top_logprobs: 5
+    enabled: true
+
+  # ── BLOCK 2: LOGIC & TECHNICAL REASONING ──────────────────
+  # Software engineering, algorithmic thinking, and mathematics.
+
+  - model: "qwen/qwen3-coder-480b-a35b-instruct"       # [DEFAULT]
+    role: "code"
+    priority: 1
+    max_tokens: 24576
+    temperature: 0.3
+    top_logprobs: 5
+    enabled: true
+
+  - model: "mistralai/codestral-22b-instruct-v0.1"
+    role: "code"
+    priority: 2
+    max_tokens: 24576
+    temperature: 0.3
+    top_logprobs: 5
+    enabled: true
+
+  - model: "qwen/qwen2.5-coder-32b-instruct"
+    role: "code"
+    priority: 3
+    max_tokens: 24576
+    temperature: 0.3
+    top_logprobs: 5
+    enabled: true
+
+  - model: "deepseek-ai/deepseek-coder-6.7b-instruct"
+    role: "code"
+    priority: 4
+    max_tokens: 24576
+    temperature: 0.3
+    top_logprobs: 5
+    enabled: true
+
+  - model: "meta/codellama-70b"
+    role: "code"
+    priority: 5
+    max_tokens: 24576
+    temperature: 0.3
+    top_logprobs: 5
+    enabled: true
+
+  - model: "qwen/qwen3-next-80b-a3b-thinking"          # [DEFAULT]
+    role: "math"
+    priority: 1
+    max_tokens: 49152
+    temperature: 0.5
+    top_logprobs: 5
+    enabled: true
+
+  - model: "deepseek-ai/deepseek-r1-distill-qwen-32b"
+    role: "math"
+    priority: 2
+    max_tokens: 24576
+    temperature: 0.5
+    top_logprobs: 5
+    enabled: true
+
+  - model: "microsoft/phi-4-mini-flash-reasoning"
+    role: "math"
+    priority: 3
+    max_tokens: 12288
+    temperature: 0.5
+    top_logprobs: 5
+    enabled: true
+
+  # ── BLOCK 3: AUTONOMOUS EVALUATION & REWARDS ──────────────
+  # Self-reflection, reward modelling, and dataset healing.
+
+  - model: "nvidia/nemotron-4-340b-reward"             # [DEFAULT]
+    role: "reward"
+    priority: 1
+    max_tokens: 24576
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/llama-3.1-nemotron-70b-reward"
+    role: "reward"
+    priority: 2
+    max_tokens: 24576
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "meta/llama-3.3-70b-instruct"              # [DEFAULT]
+    role: "critique"
+    priority: 1
+    max_tokens: 4096
+    temperature: 0.1
+    top_logprobs: 5
+    enabled: true
+
+  - model: "meta/llama-3.1-405b-instruct"              # [DEFAULT]
+    role: "healing"
+    priority: 1
+    max_tokens: 16384
+    temperature: 0.3
+    top_logprobs: 5
+    enabled: true
+
+  # ── BLOCK 4: SECURITY & SYSTEM GUARDRAILS ─────────────────
+  # Content safety, security auditing, and operational integrity.
+
+  - model: "nvidia/nemotron-content-safety-reasoning-4b" # [DEFAULT]
+    role: "safety"
+    priority: 1
+    max_tokens: 6144
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "meta/llama-3.1-405b-instruct"              # [DEFAULT]
+    role: "security_audit"
+    priority: 1
+    max_tokens: 8192
+    temperature: 0.1
+    top_logprobs: 5
+    enabled: true
+
+  # ── BLOCK 5: MULTI-MODAL PERCEPTION ───────────────────────
+  # Vision, video processing, audio transcription, and analysis.
+
+  - model: "meta/llama-3.2-90b-vision-instruct"        # [DEFAULT]
+    role: "vision_video"
+    priority: 1
+    max_tokens: 24576
+    temperature: 0.4
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/cosmos-reason2-8b"
+    role: "vision_video"
+    priority: 2
+    max_tokens: 12288
+    temperature: 0.4
+    top_logprobs: 0
+    enabled: true
+
+  - model: "meta/llama-3.2-90b-vision-instruct"        # [DEFAULT]
+    role: "multimodal_general"
+    priority: 1
+    max_tokens: 24576
+    temperature: 0.4
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/cosmos-reason2-8b"                  # [DEFAULT]
+    role: "audio_transcription"
+    priority: 1
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "microsoft/phi-4-multimodal-instruct"
+    role: "audio_transcription"
+    priority: 2
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "mistralai/mistral-large-3-675b-instruct-2512"
+    role: "audio_transcription"
+    priority: 3
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  # ── BLOCK 6: ADVANCED REPRESENTATION (RAG) ───────────────
+  # Indexing, embedding, and query refinement.
+
+  - model: "nvidia/nv-embed-v1"                        # [DEFAULT]
+    role: "embedding"
+    priority: 1
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/llama-nemotron-embed-1b-v2"
+    role: "embedding"
+    priority: 2
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "baai/bge-m3"
+    role: "embedding"
+    priority: 3
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/llama-nemotron-embed-1b-v2"         # [DEFAULT]
+    role: "embedding_query"
+    priority: 1
+    max_tokens: 2048
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  # ── BLOCK 7: SPECIALIZED DOMAIN SYNTHESIS ─────────────────
+  # Translation, dialect mapping, and 3D creative synthesis.
+
+  - model: "nvidia/streampetr"                         # [DEFAULT]
+    role: "3d_synthesis"
+    priority: 1
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/usdcode-llama-3.1-70b-instruct"
+    role: "3d_synthesis"
+    priority: 2
+    max_tokens: 24576
+    temperature: 0.4
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/riva-translate-4b-instruct-v1.1"    # [DEFAULT]
+    role: "translation_dialect"
+    priority: 1
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "utter-project/eurollm-9b-instruct"
+    role: "translation_dialect"
+    priority: 2
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true
+
+  - model: "nvidia/nemotron-4-mini-hindi-4b-instruct"
+    role: "translation_dialect"
+    priority: 3
+    max_tokens: 12288
+    temperature: 0.0
+    top_logprobs: 0
+    enabled: true

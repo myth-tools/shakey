@@ -1,0 +1,14 @@
+[
+  {
+    "id": "known-001",
+    "prompt": "What is the capital of France?",
+    "target": "Paris",
+    "domain": "knowledge"
+  },
+  {
+    "id": "known-002",
+    "prompt": "Who wrote 'The Republic'?",
+    "target": "Plato",
+    "domain": "knowledge"
+  }
+]

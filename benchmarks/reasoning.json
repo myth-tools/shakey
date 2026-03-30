@@ -1,0 +1,14 @@
+[
+  {
+    "id": "reason-001",
+    "prompt": "If Sally has 3 brothers and each brother has 2 sisters, how many sisters does Sally have?",
+    "target": "2",
+    "domain": "reasoning"
+  },
+  {
+    "id": "reason-002",
+    "prompt": "Which is heavier: 1 ton of feathers or 1 ton of lead?",
+    "target": "same",
+    "domain": "reasoning"
+  }
+]

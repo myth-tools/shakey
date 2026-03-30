@@ -1,0 +1,40 @@
+[package]
+name = "shakey-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "CLI entry point for the autonomous self-evolving LLM"
+
+[[bin]]
+name = "shakey-cli"
+path = "src/main.rs"
+
+[dependencies]
+shakey-core = { workspace = true }
+shakey-distill = { workspace = true }
+shakey-agent = { workspace = true }
+candle-core = { workspace = true }
+candle-nn = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+clap = { workspace = true }
+rayon = { workspace = true }
+anyhow = { workspace = true }
+parking_lot = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+chrono = { workspace = true }
+indicatif = { workspace = true }
+directories = { workspace = true }
+sha2 = { workspace = true }
+uuid = { workspace = true }
+rand = "0.8"
+termimad = "0.31"
+daemonize = "0.5.0"
+
+[features]
+default = []
+cuda = ["shakey-core/cuda"]
+metal = ["shakey-core/metal"]

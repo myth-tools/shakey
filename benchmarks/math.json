@@ -1,0 +1,14 @@
+[
+  {
+    "id": "math-001",
+    "prompt": "Evaluate the integral of x^2 from 0 to 3.",
+    "target": "9",
+    "domain": "math"
+  },
+  {
+    "id": "math-002",
+    "prompt": "What is the derivative of e^(2x)?",
+    "target": "2e^(2x)",
+    "domain": "math"
+  }
+]

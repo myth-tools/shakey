@@ -1,0 +1,14 @@
+[
+  {
+    "id": "code-001",
+    "prompt": "Write a Python function to check for prime numbers.",
+    "target": "def is_prime(n):",
+    "domain": "coding"
+  },
+  {
+    "id": "code-002",
+    "prompt": "Implement a binary search in Rust.",
+    "target": "fn binary_search<T: Ord>",
+    "domain": "coding"
+  }
+]

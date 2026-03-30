@@ -1,0 +1,39 @@
+[package]
+name = "shakey-agent"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Autonomous self-evolving agent with OODA loop"
+
+[dependencies]
+shakey-core = { workspace = true }
+shakey-distill = { workspace = true }
+candle-core = { workspace = true }
+candle-nn = { workspace = true }
+tokio = { workspace = true }
+futures = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+rayon = { workspace = true }
+parking_lot = { workspace = true }
+rand = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+sha2 = { workspace = true }
+redb = { workspace = true }
+wasmtime = { workspace = true }
+wasmtime-wasi = { workspace = true }
+scraper = "0.26.0"
+ignore = { workspace = true }
+urlencoding = "2.1.3"
+regex = "1.12.3"
+tempfile = { workspace = true }
+chromiumoxide = { version = "0.7", features = ["async-std-runtime", "tokio-runtime"] }
+async-std = "1"
+hex = { workspace = true }
+sysinfo = "0.38.4"

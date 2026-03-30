@@ -1,0 +1,40 @@
+[package]
+name = "shakey-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Core LLM architecture — BitNet 1.58-bit Sparse MoE Transformer"
+
+[dependencies]
+candle-core = { workspace = true }
+candle-nn = { workspace = true }
+safetensors = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+bincode = { workspace = true }
+tokio = { workspace = true, features = ["sync", "rt"] }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+rand = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+byteorder = { workspace = true }
+memmap2 = { workspace = true }
+parking_lot = { workspace = true }
+once_cell = { workspace = true }
+async-trait = { workspace = true }
+rayon = { workspace = true }
+tracing = { workspace = true }
+indicatif = { workspace = true }
+tokenizers = "0.22"
+
+[features]
+default = []
+cuda = ["candle-core/cuda", "candle-nn/cuda"]
+metal = ["candle-core/metal", "candle-nn/metal"]
+
+[dev-dependencies]
+tempfile = "3"

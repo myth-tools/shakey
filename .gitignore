@@ -1,0 +1,34 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.cargo/
+
+# Model artifacts and Agent Memory
+shakey_data/
+
+# Secrets
+.env
+*.key
+api_keys.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keep config templates
+!configs/*.yaml
+!configs/*.toml
+
+# Logs
+*.log
+Logs/
+
+# Private
+notes/

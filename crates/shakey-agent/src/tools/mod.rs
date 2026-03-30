@@ -1,0 +1,15 @@
+pub mod browser;
+pub mod codebase_master;
+pub mod context_manager;
+pub mod exploit_architect;
+pub mod fs_tools;
+pub mod html_parse;
+pub mod kali_pro_toolkit;
+pub mod native_sandbox;
+pub mod network_master;
+pub mod registry;
+pub mod sandbox;
+pub mod shell_exec;
+pub mod tool_synthesis;
+pub mod web_fetch;
+pub mod web_search;

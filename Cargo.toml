@@ -1,0 +1,86 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/shakey-core",
+    "crates/shakey-distill",
+    "crates/shakey-agent",
+    "crates/shakey-cli", "crates/shakey-bench",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/shakey-project/shakey"
+rust-version = "1.75"
+
+[workspace.lints.clippy]
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+
+[workspace.dependencies]
+# === Tensor / ML ===
+candle-core = "0.8"
+candle-nn = "0.8"
+safetensors = "0.4"
+
+# === Serialization ===
+serde = { version = "1", features = ["derive", "rc"] }
+serde_json = "1"
+serde_yaml = "0.9"
+toml = "0.8"
+bincode = "1"
+
+# === Async / Networking ===
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json", "stream"] }
+futures = "0.3"
+
+# === CLI ===
+clap = { version = "4", features = ["derive"] }
+
+# === Logging ===
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# === Utilities ===
+anyhow = "1"
+thiserror = "1.0.69"
+rand = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+sha2 = "0.10"
+hex = "0.4"
+byteorder = "1"
+memmap2 = "0.9"
+parking_lot = "0.12"
+rayon = "1"
+indicatif = "0.18"
+once_cell = "1"
+async-trait = "0.1.86"
+# === Infrastructure ===
+redb = "2"
+wasmtime = "29"
+wasmtime-wasi = { version = "29", features = ["preview1"] }
+directories = "5"
+tempfile = "3"
+ignore = "0.4"
+
+# === Internal crates ===
+shakey-core = { path = "crates/shakey-core" }
+shakey-distill = { path = "crates/shakey-distill" }
+shakey-agent = { path = "crates/shakey-agent" }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.release-fast]
+inherits = "release"
+lto = "thin"
+codegen-units = 4
+strip = false
